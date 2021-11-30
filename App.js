@@ -2,7 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
 import * as Location from "expo-location";
-//import {Location, Perissions} from 'expo';
+//import {Location, Permissions} from 'expo';
 import WeatherInfo from "./components/WeatherInfo";
 import WeatherDetails from "./components/WeatherDetails";
 import UnitsPicker from "./components/UnitsPicker";
@@ -17,9 +17,12 @@ export default function App() {
   const [currentWeather, setCurrentWeather] = useState(null);
   const [unitsSystem, setUnitsSystem] = useState("metric");
 
+  //Effect hook which allows states to be used without writing a class
+  //Mainly used to handle states and side effects in react functional components 
   useEffect(() => {
     load();
   }, [unitsSystem]);
+  
   
   async function load() {
     setCurrentWeather(null)
@@ -37,13 +40,14 @@ export default function App() {
       const { latitude, longitude } = location.coords;
 
       const weatherUrl = `${BASE_WEATHER_URL}lat=${latitude}&lon=${longitude}&units=${unitsSystem}&appid=${WEATHER_API_KEY}`;
-      //alert('Longitude: ${longitude}, Latitude: ${latitude}');
 
       //API request
+      //response is used to get the weather info
+      //result is response in json
       const response = await fetch(weatherUrl);
-
       const result = await response.json();
 
+      //if response is ok, the new state of the currentWeather is the result
       if (response.ok) {
         setCurrentWeather(result);
       } else {
